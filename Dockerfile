@@ -5,9 +5,9 @@ SHELL ["/bin/bash", "-c"]
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-# Install packages inside the new environment
 RUN python -m pip install --no-cache-dir --upgrade pip==22.3.1 \
     && pip install --root-user-action=ignore --no-cache-dir --default-timeout=900 \
+    opencv-python-headless==4.5.5.62 \
     einops \
     shapely \
     timm \
@@ -17,7 +17,6 @@ RUN python -m pip install --no-cache-dir --upgrade pip==22.3.1 \
     prettytable \
     pymongo \
     transformers \
-    opencv-python \
     pycocotools  \
     matplotlib \
     onnxruntime \
@@ -29,16 +28,20 @@ RUN git clone https://github.com/microsoft/GLIP.git \
     && cd GLIP \
     && python setup.py build develop --user \
     && cd .. \
-    && mkdir glip-models \
-    && cd glip-models \
-    && wget https://penzhanwu2bbs.blob.core.windows.net/data/GLIPv1_Open/models/swin_tiny_patch4_window7_224.pth -O swin_tiny_patch4_window7_224.pth \
-    && wget https://penzhanwu2bbs.blob.core.windows.net/data/GLIPv1_Open/models/swin_large_patch4_window12_384_22k.pth -O swin_large_patch4_window12_384_22k.pth \
+    && mkdir glip-models
 
 
-RUN git clone git@github.com:facebookresearch/segment-anything.git \
+RUN git clone https://github.com/facebookresearch/segment-anything.git \
     && cd segment-anything \
     && pip install -e . \
-    && mkdir sam-models \
-    && wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth \
+    && cd .. \
+    && mkdir sam-models
+
+
+RUN wget https://penzhanwu2bbs.blob.core.windows.net/data/GLIPv1_Open/models/glip_tiny_model_o365_goldg_cc_sbu.pth  -O glip-models/glip_tiny_model_o365_goldg_cc_sbu.pth \
+    && wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth -O sam-models/sam_vit_h_4b8939.pth
+
+# This is just to have less stuff to look at.
+RUN rm -rf NVIDIA_Deep_Learning_Container_License.pdf README.md docker-examples examples tutorials
 
 CMD ["bash"]

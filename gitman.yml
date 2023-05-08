@@ -1,0 +1,15 @@
+# Copyright [2023] Boston Dynamics AI Institute, Inc.
+
+location: external
+sources:
+  - repo: https://github.com/bdaiinstitute/bdai-data.git
+    name: bdai-data
+    rev: main
+    type: git
+    params:
+    sparse_paths:
+      -
+    links:
+      -
+    scripts:
+      -
